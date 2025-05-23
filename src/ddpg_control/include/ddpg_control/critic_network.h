@@ -1,15 +1,27 @@
 #ifndef DDPG_CONTROL_CRITIC_NETWORK_H
 #define DDPG_CONTROL_CRITIC_NETWORK_H
+
 #include <Eigen/Dense>
-#include "utils.h"
+#include <string>
+
 namespace ddpg_control {
+
 class CriticNetwork {
 public:
   CriticNetwork(int state_dim, int action_dim);
+
   double forward(const Eigen::VectorXd& state, const Eigen::VectorXd& action);
+  void backward(const Eigen::VectorXd& state, const Eigen::VectorXd& action, double td_error);
+  void soft_update(CriticNetwork& target, double tau);
+  void save(const std::string& path) const;
+  void load(const std::string& path);
+
 private:
-  Eigen::MatrixXd W1_, W2_, W3_;
-  Eigen::VectorXd b1_, b2_, b3_;
+  int state_dim_, action_dim_;
+  Eigen::MatrixXd weights_;
+  Eigen::VectorXd biases_;
 };
-}
-#endif
+
+} // namespace ddpg_control
+
+#endif // DDPG_CONTROL_CRITIC_NETWORK_H

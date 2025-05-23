@@ -1,9 +1,12 @@
 #ifndef DDPG_CONTROL_REPLAY_BUFFER_H
 #define DDPG_CONTROL_REPLAY_BUFFER_H
-#include <deque>
-#include <vector>
+
 #include <Eigen/Dense>
+#include <deque>
+#include <random>
+
 namespace ddpg_control {
+
 struct Transition {
   Eigen::VectorXd state;
   Eigen::VectorXd action;
@@ -13,12 +16,17 @@ struct Transition {
 
 class ReplayBuffer {
 public:
-  ReplayBuffer(size_t max_size);
-  void add(const Transition& t);
-  std::vector<Transition> sample(size_t batch_size);
+  explicit ReplayBuffer(size_t capacity);
+  void add(const Transition& transition);
+  std::vector<Transition> sample(size_t batch_size) const;
+  size_t size() const;
+
 private:
+  size_t capacity_;
   std::deque<Transition> buffer_;
-  size_t max_size_;
+  mutable std::default_random_engine generator_;
 };
-}
-#endif
+
+} // namespace ddpg_control
+
+#endif // DDPG_CONTROL_REPLAY_BUFFER_H

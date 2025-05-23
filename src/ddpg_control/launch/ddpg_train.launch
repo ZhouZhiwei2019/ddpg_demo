@@ -1,0 +1,3 @@
+<launch>
+  <node name="ddpg_train_node" pkg="ddpg_control" type="train_node" output="screen" />
+</launch>
